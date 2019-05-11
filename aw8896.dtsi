@@ -1,0 +1,11 @@
+/* AWINIC AW8896 Smart PA */
+&i2c3 {
+	aw8896_smartpa@34 {
+		compatible = "awinic,aw8896_smartpa";
+		reg = <0x34>;
+		reset-gpio = <&pio 65 0>;
+		irq-gpio = <&pio 5 0>;
+		status = "okay";
+	};
+};
+/* AWINIC AW8896 Smart PA End */
