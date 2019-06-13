@@ -446,10 +446,12 @@ static void aw8896_cfg_loaded(const struct firmware *cont, void *context)
 
     aw8896->dsp_cfg_len = aw8896_cfg->len;
 
+    kfree(aw8896_cfg);
     pr_info("%s: cfg update complete\n", __func__);
 
     aw8896_dsp_enable(aw8896, true);
 
+    /* delay 1m wait for dsp start run */
     msleep(1);
 
     ret = aw8896_get_dsp_status(aw8896);
@@ -529,6 +531,7 @@ static void aw8896_fw_loaded(const struct firmware *cont, void *context)
     mutex_unlock(&aw8896->lock);
 
     aw8896->dsp_fw_len = aw8896_fw->len;
+    kfree(aw8896_fw);
 
     pr_info("%s: fw update complete\n", __func__);
 
@@ -1276,7 +1279,9 @@ int aw8896_hw_reset(struct aw8896 *aw8896)
 
     if (aw8896 && gpio_is_valid(aw8896->reset_gpio)) {
         gpio_set_value_cansleep(aw8896->reset_gpio, 1);
+        /* delay 1ms for aw8896 hardware reset */
         msleep(1);
+        /* delay 1ms for aw8896 hardware enable */
         gpio_set_value_cansleep(aw8896->reset_gpio, 0);
         msleep(1);
     } else {
